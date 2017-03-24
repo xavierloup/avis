@@ -1,0 +1,49 @@
+<form>
+    </div><div class="form-group">
+        <div class="col-md-3">
+            <label for="creation_date">Created</label>
+            <input type="text" value="{{ alert.creation_date | date : 'short' }}" class="form-control" id="creation_date"></input>
+        </div>
+        <div class="col-md-3">
+            <label for="user">User</label>
+            <input type="text" value="{{ alert.user }}" class="form-control" id="user""></input>
+        </div>  
+        <div class="col-md-3">
+            <label for="scrore">Sentiment</label>
+            <input type="text" value="{{ alert.score }}" class="form-control" id="score"></input>
+        </div>  
+        <div class="col-md-3">
+            <label for="status">Status</label>
+            <input type="text" value="{{ alert.status }}" class="form-control btn-warning" id="status"></input>
+        </div>  
+    </div>
+    <div class="form-group"><p>&nbsp;</p></div>
+    <div class="form-group">
+        <div class="col-md-12">
+            <label for="alert">Alert message</label>
+            <input type="text" value="{{ alert.alert }}" class="form-control" id="alert"></input>
+        </div>  
+    </div>
+    <div class="form-group"><p>&nbsp;</p></div>
+    <div class="form-group">
+        <div class="col-md-6">
+            <label for="call_police">Call Police</label>
+            <input type="text" value="{{ alert.call_police }}" class="form-control" id="call_police"></input>
+        </div>  
+        <div class="col-md-6">
+            <label for="call_fire">Call Fire Station</label>
+            <input type="text" value="{{ alert.call_fire }}" class="form-control" id="call_fire"></input>
+        </div>  
+    </div>
+    <div class="form-group"><p>&nbsp;</p></div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <label for="language">Language</label>
+            <input type="text" value="{{ alert.language }}" class="form-control" id="language" disabled="true"></input>
+        </div>
+        <div class="col-md-9">
+            <label for="untranslated">Untranslated</label>
+            <input type="text" value="{{ alert.untranslated }}" class="form-control" id="untranslated" disabled="true"></input>
+        </div>
+    </div>
+</form>

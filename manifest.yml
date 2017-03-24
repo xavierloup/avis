@@ -1,8 +1,9 @@
 applications:
-- path: .
-  memory: 256M
-  instances: 1
+- disk_quota: 1024M
+  host: community-alert
+  name: community-alert
+  path: .
   domain: mybluemix.net
-  name: avis
-  host: avis
-  disk_quota: 1024M
+  instances: 1
+  memory: 256M
+  buildpack: nodejs_buildpack

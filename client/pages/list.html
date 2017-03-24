@@ -1,0 +1,23 @@
+<div class="row" ng-show="alerts.length">
+  <div class="col-md-12" align="right">
+    <label><span class="glyphicon glyphicon-search"></span> <input ng-model="searchText"></label>
+  </div>
+  <div>
+    <table class="table">
+      <thead>
+        <th><a ng-click="sortBy('creation_date')">Created</a></th>
+        <th class="hidden-xs"><a ng-click="sortBy('user')">User</a></th>
+        <th><a ng-click="sortBy('alert')">Alert</a></th>
+        <th class="hidden-xs"><a ng-click="sortBy('score')">Sentiment</a></th>
+        <th><a ng-click="sortBy('status')">Status</a></th>
+      </thead>
+      <tr ng-repeat="alert in alerts | filter:searchText | orderBy:sortProperty:reverse" ng-class="{ success: alert.score>0, warning: alert.score==0, danger: alert.score<0}">
+        <td class="col-md-2"><a ng-href="#detail/{{ alert._id }}">{{ alert.creation_date | date : 'short' }}</a></td>
+        <td class="col-md-1 hidden-xs">{{ alert.user }}</td>
+        <td class="col-md-8">{{ alert.alert }}</td>
+        <td class="col-md-1 hidden-xs text-center">{{ alert.score }}</td>
+        <td class="col-md-2 text-center">{{ alert.status }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
