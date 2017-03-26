@@ -1,0 +1,6 @@
+<form name="form">
+  <label for="text">Partagez votre avis sur cette agence Société Générale</label>
+  <textarea type="text" class="form-control" rows="5" id="text" ng-model="text" required></textarea>
+  <p></p>
+  <button type="submit" value="Envoyer" class="btn btn-lg btn-primary pull-right" ng-click="postReview()" ng-disabled="form.$invalid">Partager <span class="glyphicon glyphicon-share"></span></button>
+</form>

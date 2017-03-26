@@ -9,15 +9,13 @@
   "author": "Chyld Medford <chyld.medford@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "bluemix-object-storage": "^2.0.1",
-    "body-parser": "^1.15.0",
     "express": "^4.13.4",
-    "morgan": "^1.7.0",
-    "multer": "^1.1.0",
-    "node-uuid": "^1.4.7",
-    "openwhisk": "^1.0.1",
     "request": "^2.69.0",
-    "twilio": "^2.9.1"
+    "cfenv": "^1.0.4",
+    "body-parser": "^1.15.0",
+    "cloudant": "*",
+    "fs": "*",
+    "watson-developer-cloud": "*"
   },
   "devDependencies": {
     "chai": "^3.5.0",

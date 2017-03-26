@@ -1,22 +1,24 @@
-<div class="row" ng-show="alerts.length">
-  <div class="col-md-12" align="right">
-    <label><span class="glyphicon glyphicon-search"></span> <input ng-model="searchText"></label>
+<div class="row" ng-show="reviews.length">
+  <div align="right">
+    <a href="#/new">
+      <span class="glyphicon glyphicon-plus" style="margin-right:20px;font-size:30px;cursor:pointer;color:#666666" ng-click="getReviews()"></span>
+    </a>
+    <span class="glyphicon glyphicon-refresh" style="margin-right:20px;font-size:30px;cursor:pointer;color:#666666" ng-click="getReviews()"></span>
+    <label>
+      <span class="glyphicon glyphicon-search" style="margin-right:20px;font-size:30px;cursor:pointer;color:#666666" ng-click="showHideSearch()"></span>
+    </label>
   </div>
-  <div>
+  <div align="right" ng-hide="isHidden">
+    <input ng-model="searchText" class="input-lg" style="margin-right:20px">
+  </div>
+  <div style="margin-top:10px">
     <table class="table">
-      <thead>
-        <th><a ng-click="sortBy('creation_date')">Created</a></th>
-        <th class="hidden-xs"><a ng-click="sortBy('user')">User</a></th>
-        <th><a ng-click="sortBy('alert')">Alert</a></th>
-        <th class="hidden-xs"><a ng-click="sortBy('score')">Sentiment</a></th>
-        <th><a ng-click="sortBy('status')">Status</a></th>
       </thead>
-      <tr ng-repeat="alert in alerts | filter:searchText | orderBy:sortProperty:reverse" ng-class="{ success: alert.score>0, warning: alert.score==0, danger: alert.score<0}">
-        <td class="col-md-2"><a ng-href="#detail/{{ alert._id }}">{{ alert.creation_date | date : 'short' }}</a></td>
-        <td class="col-md-1 hidden-xs">{{ alert.user }}</td>
-        <td class="col-md-8">{{ alert.alert }}</td>
-        <td class="col-md-1 hidden-xs text-center">{{ alert.score }}</td>
-        <td class="col-md-2 text-center">{{ alert.status }}</td>
+      <tr ng-repeat="review in reviews | filter:searchText | orderBy:sortProperty:reverse">
+        <td class="col-md-1 text-center" ng-class="{ success: review.doc.score>0, warning: review.doc.score==0, danger: review.doc.score<0}">
+            <a ng-href="#detail/{{ review.doc._id }}">{{ review.doc.creation_date | date : 'dd/MM hh:mm' }}</a>
+        </td>
+        <td class="col-md-11">{{ review.doc.text }}</td>
       </tr>
     </table>
   </div>

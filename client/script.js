@@ -1,32 +1,51 @@
 /* global angular, nodered, express, openwhisk */
-function drawChart(alerts){
+function drawChart(reviews){
   $('#graph').highcharts({
     title: {
-      text: 'Alert Sentiment Analysis'
+      text: 'Avis - Analyse du Sentiment'
     },
     xAxis: {
-       categories: alerts.map(function(t, i){return i})
+       type: 'datetime',
+       categories: reviews.map( function(t) { return new Date(t.doc.creation_date) } ),
+       title: {
+            text: 'Date'
+      }
+    },
+    yAxis: {
+      title: {
+          text: 'Sentiment'
+      }
+    },
+    dateTimeLabelFormats: { // don't display the dummy year
+      month: '%e. %b',
+      year: '%b'
     },
     series: [
      {
-       data: alerts.map(function(t){return t.score})
+       data: reviews.map(function(t){return t.doc.score})
      }
     ]
 });
 }
 
-// create the module and name it alertApp
+// create the module and name it reviewApp
 // also include ngRoute for all our routing needs
-var alertApp = angular.module('alertApp', ['ngRoute']);
+var reviewApp = angular.module('reviewApp', ['ngRoute']);
 
 // configure our routes
-alertApp.config(function($routeProvider) {
+reviewApp.config(function($routeProvider) {
     $routeProvider
 
         // route for the home page
         .when('/', {
-            templateUrl : 'pages/list.html',
-            controller  : 'listController'
+            templateUrl : 'pages/new.html',
+            controller  : 'newController'
+        })
+
+        // route for the list page
+        .when('/new', {
+            templateUrl : 'pages/new.html',
+            controller  : 'newController'
         })
 
         // route for the list page
@@ -54,50 +73,189 @@ alertApp.config(function($routeProvider) {
         });
 });
 
+// Post a new review
+reviewApp.controller('newController', function($scope, $http, $routeParams, $location) {
+  $scope.postReview = function() {
+      $http.post('/review', { text: $scope.text }).then(function(data) {
+        $location.path('/list');
+      })
+  }
+});
+
 // create the controller and inject Angular's $scope
-alertApp.controller('listController', function($scope, $http, $interval) {
-    $scope.getAlerts = function() {
-        $http.get('/alerts').then(function(data) {
-            console.log(data);
-            $scope.alerts = data.data.payload;
-            // $interval( function refresh(){
-            //     $scope.getAlerts();
-            // }, 10000);
+reviewApp.controller('listController', function($scope, $http, $interval) {
+    $scope.getReviews = function() {
+        $http.get('/reviews').then(function(data) {
+            $scope.reviews = angular.fromJson(data.data.payload);
         })
     }
 
     // Manage list sorting
-    $scope.sortProperty = 'creation_date';
+    $scope.sortProperty = 'doc.creation_date';
     $scope.reverse = true;
     $scope.sortBy = function(sortProperty) {
         $scope.reverse = ($scope.sortProperty === sortProperty) ? !$scope.reverse : false;
         $scope.sortProperty = sortProperty;
     };
 
-    // Load alerts on load
-    $scope.getAlerts();
+    // Show / hide search field
+    $scope.isHidden = true;
+    $scope.showHideSearch = function () {
+      // If DIV is hidden it will be visible and vice versa.
+      $scope.isHidden = $scope.isHidden ? false : true;
+    }
+
+    // Load reviews on load
+    $scope.getReviews();
 });
 
-alertApp.controller('detailController', function($scope, $http, $routeParams) {
-    $scope.getAlert = function(id) {
-        $http.get('/alert?id=' + id).then(function(data) {
-          console.log(data);
-          $scope.alert = data.data.payload;
+reviewApp.controller('detailController', function($scope, $http, $routeParams) {
+    $scope.getReview = function(id) {
+        $http.get('/review?id=' + id).then(function(data) {
+          $scope.review = angular.fromJson(data.data.payload);
         })
     }
-    // Load alerts on load
-    $scope.getAlert($routeParams.id);
+    // Load reviews on load
+    $scope.getReview($routeParams.id);
 });
 
-alertApp.controller('reportController', function($scope, $http) {
+reviewApp.controller('reportController', function($scope, $http) {
     $scope.drawReport = function() {
-        $http.get('/alerts').then(function(data) {
-            console.log(data);
+        $http.get('/reviews').then(function(data) {
             drawChart(data.data.payload);
         })
     }
     $scope.drawReport();
 });
 
-alertApp.controller('aboutController', function($scope) {
+reviewApp.controller('aboutController', function($scope) {
 });
+
+
+
+// Angular Locale for fr_FR
+'use strict';
+angular.module("ngLocale", [], ["$provide", function($provide) {
+var PLURAL_CATEGORY = {ZERO: "zero", ONE: "one", TWO: "two", FEW: "few", MANY: "many", OTHER: "other"};
+$provide.value("$locale", {
+  "DATETIME_FORMATS": {
+    "AMPMS": [
+      "AM",
+      "PM"
+    ],
+    "DAY": [
+      "dimanche",
+      "lundi",
+      "mardi",
+      "mercredi",
+      "jeudi",
+      "vendredi",
+      "samedi"
+    ],
+    "ERANAMES": [
+      "avant J\u00e9sus-Christ",
+      "apr\u00e8s J\u00e9sus-Christ"
+    ],
+    "ERAS": [
+      "av. J.-C.",
+      "ap. J.-C."
+    ],
+    "FIRSTDAYOFWEEK": 0,
+    "MONTH": [
+      "janvier",
+      "f\u00e9vrier",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "ao\u00fbt",
+      "septembre",
+      "octobre",
+      "novembre",
+      "d\u00e9cembre"
+    ],
+    "SHORTDAY": [
+      "dim.",
+      "lun.",
+      "mar.",
+      "mer.",
+      "jeu.",
+      "ven.",
+      "sam."
+    ],
+    "SHORTMONTH": [
+      "janv.",
+      "f\u00e9vr.",
+      "mars",
+      "avr.",
+      "mai",
+      "juin",
+      "juil.",
+      "ao\u00fbt",
+      "sept.",
+      "oct.",
+      "nov.",
+      "d\u00e9c."
+    ],
+    "STANDALONEMONTH": [
+      "janvier",
+      "f\u00e9vrier",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "ao\u00fbt",
+      "septembre",
+      "octobre",
+      "novembre",
+      "d\u00e9cembre"
+    ],
+    "WEEKENDRANGE": [
+      5,
+      6
+    ],
+    "fullDate": "EEEE d MMMM y",
+    "longDate": "d MMMM y",
+    "medium": "d MMM y HH:mm:ss",
+    "mediumDate": "d MMM y",
+    "mediumTime": "HH:mm:ss",
+    "short": "dd/MM/y HH:mm",
+    "shortDate": "dd/MM/y",
+    "shortTime": "HH:mm"
+  },
+  "NUMBER_FORMATS": {
+    "CURRENCY_SYM": "\u20ac",
+    "DECIMAL_SEP": ",",
+    "GROUP_SEP": "\u00a0",
+    "PATTERNS": [
+      {
+        "gSize": 3,
+        "lgSize": 3,
+        "maxFrac": 3,
+        "minFrac": 0,
+        "minInt": 1,
+        "negPre": "-",
+        "negSuf": "",
+        "posPre": "",
+        "posSuf": ""
+      },
+      {
+        "gSize": 3,
+        "lgSize": 3,
+        "maxFrac": 2,
+        "minFrac": 2,
+        "minInt": 1,
+        "negPre": "-",
+        "negSuf": "\u00a0\u00a4",
+        "posPre": "",
+        "posSuf": "\u00a0\u00a4"
+      }
+    ]
+  },
+  "id": "fr-fr",
+  "localeID": "fr_FR",
+  "pluralCat": function(n, opt_precision) {  var i = n | 0;  if (i == 0 || i == 1) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
+});
+}]);
